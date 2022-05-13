@@ -26,5 +26,12 @@ namespace ClaramontanaBibliography.Service
             var videos = await _libraryContext.Videos.ToListAsync();
             return videos;
         }
-    }
+
+        public async Task<Book> GetBookAsync(Guid bookId)
+        {
+
+            var book = await _libraryContext.Books.FirstOrDefaultAsync(x => x.Id == bookId);
+            return book;
+        }       
+    }           
 }
