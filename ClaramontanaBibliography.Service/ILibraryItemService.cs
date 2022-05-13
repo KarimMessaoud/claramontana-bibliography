@@ -10,5 +10,6 @@ namespace ClaramontanaBibliography.Service
         Task<IEnumerable<Book>> GetAllBooksAsync();
         Task<IEnumerable<Video>> GetAllVideosAsync();
         Task<Book> GetBookAsync(Guid bookId);
+        Task<Video> GetVideoAsync(Guid videoId);
     }
 }

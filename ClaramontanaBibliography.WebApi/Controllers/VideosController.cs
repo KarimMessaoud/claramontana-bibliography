@@ -32,5 +32,27 @@ namespace ClaramontanaBibliography.WebApi.Controllers
             });
             return videos;
         }
+
+        [HttpGet("{videoId:guid}")]
+        public async Task<ActionResult<VideoDto>> GetVideoAsync(Guid videoId)
+        {
+            var video = await _libraryItemService.GetVideoAsync(videoId);
+
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            var videoDto = new VideoDto
+            {
+                Id = video.Id,
+                Title = video.Title,
+                Director = video.Director,
+                Year = video.Year,
+                ImageUrl = video.ImageUrl
+            };
+
+            return videoDto;
+        }
     }
 }
