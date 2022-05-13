@@ -1,4 +1,5 @@
 using ClaramontanaBibliography.Data.Models;
+using ClaramontanaBibliography.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,8 @@ namespace ClaramontanaBibliography.WebApi
         {
 
             services.AddControllers();
+
+            services.AddScoped<ILibraryItemService, LibraryItemService>();
             services.AddDbContext<LibraryContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaLibraryConnection")));
             services.AddSwaggerGen(c =>
