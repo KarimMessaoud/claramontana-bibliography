@@ -1,5 +1,4 @@
-﻿using ClaramontanaBibliography.Data.Models;
-using ClaramontanaBibliography.Service;
+﻿using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.WebApi.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,6 +31,21 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 ImageUrl = x.ImageUrl
             });
             return books;
-        } 
+        }
+
+        [HttpGet]
+        [Route("Videos")]
+        public async Task<IEnumerable<VideoDto>> GetAllVideosAsync()
+        {
+            var videos = (await _libraryItemService.GetAllVideosAsync()).Select(x => new VideoDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Director = x.Director,
+                Year = x.Year,
+                ImageUrl = x.ImageUrl
+            });
+            return videos;
+        }
     }
 }

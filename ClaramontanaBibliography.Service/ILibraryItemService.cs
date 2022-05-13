@@ -7,5 +7,6 @@ namespace ClaramontanaBibliography.Service
     public interface ILibraryItemService
     {
         Task<IEnumerable<Book>> GetAllBooksAsync();
+        Task<IEnumerable<Video>> GetAllVideosAsync();
     }
 }
