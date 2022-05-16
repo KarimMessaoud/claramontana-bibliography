@@ -106,5 +106,19 @@ namespace ClaramontanaBibliography.WebApi.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{bookId}")]
+        public async Task<ActionResult> DeleteBookAsync(Guid bookId)
+        {
+            var book = await _libraryItemService.GetBookAsync(bookId);
+
+            if(book == null)
+            {
+                return NotFound();
+            }
+
+            await _libraryItemService.DeleteBookAsync(bookId);
+            return NoContent();
+        }
     }
 }
