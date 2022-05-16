@@ -1,4 +1,5 @@
-﻿using ClaramontanaBibliography.Service;
+﻿using ClaramontanaBibliography.Data.Entities;
+using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.WebApi.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,6 +35,7 @@ namespace ClaramontanaBibliography.WebApi.Controllers
             return videos;
         }
 
+        [ActionName("GetVideoAsync")]
         [HttpGet("{videoId:guid}")]
         public async Task<ActionResult<VideoDto>> GetVideoAsync(Guid videoId)
         {
@@ -54,6 +56,32 @@ namespace ClaramontanaBibliography.WebApi.Controllers
             };
 
             return videoDto;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<VideoDto>> CreateVideoAsync(CreateVideoDto videoDto)
+        {
+            Video video = new Video()
+            {
+                Id = Guid.NewGuid(),
+                Title = videoDto.Title,
+                Director = videoDto.Director,
+                Year = videoDto.Year,
+                DurationInMinutes = videoDto.DurationInMinutes
+            };
+
+            await _libraryItemService.CreateVideoAsync(video);
+
+
+            return CreatedAtAction(nameof(GetVideoAsync), new { videoId = video.Id },
+                new
+                {
+                    Id = video.Id,
+                    Title = video.Title,
+                    Author = video.Director,
+                    Year = video.Year,
+                    DurationInMinutes = video.DurationInMinutes
+                });
         }
     }
 }
