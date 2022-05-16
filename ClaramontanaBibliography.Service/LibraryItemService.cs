@@ -63,5 +63,16 @@ namespace ClaramontanaBibliography.Service
             item.NumberOfPages = book.NumberOfPages;
             await _libraryContext.SaveChangesAsync();
         }
+
+        public async Task UpdateVideoAsync(Video video)
+        {
+            var item = await _libraryContext.Videos.FirstOrDefaultAsync(x => x.Id == video.Id);
+            item.Id = video.Id;
+            item.Title = video.Title;
+            item.Director = video.Director;
+            item.Year = video.Year;
+            item.DurationInMinutes = video.DurationInMinutes;
+            await _libraryContext.SaveChangesAsync();
+        }
     }           
 }

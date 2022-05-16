@@ -83,5 +83,29 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                     DurationInMinutes = video.DurationInMinutes
                 });
         }
+
+        [HttpPut("{videoId}")]
+        public async Task<ActionResult> UpdateVideoAsync(Guid videoId, UpdateVideoDto videoDto)
+        {
+            var existingVideo = await _libraryItemService.GetVideoAsync(videoId);
+
+            if (existingVideo == null)
+            {
+                return NotFound();
+            }
+
+            var updatedVideo = new Video
+            {
+                Id = existingVideo.Id,
+                Title = videoDto.Title,
+                Director = videoDto.Director,
+                Year = videoDto.Year,
+                DurationInMinutes = videoDto.DurationInMinutes
+            };
+
+            await _libraryItemService.UpdateVideoAsync(updatedVideo);
+
+            return NoContent();
+        }
     }
 }
