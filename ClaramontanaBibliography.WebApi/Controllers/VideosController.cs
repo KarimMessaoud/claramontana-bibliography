@@ -28,8 +28,9 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 Title = x.Title,
                 Director = x.Director,
                 Year = x.Year,
-                ImageUrl = x.ImageUrl
+                DurationInMinutes = x.DurationInMinutes
             });
+
             return videos;
         }
 
@@ -49,7 +50,7 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 Title = video.Title,
                 Director = video.Director,
                 Year = video.Year,
-                ImageUrl = video.ImageUrl
+                DurationInMinutes = video.DurationInMinutes
             };
 
             return videoDto;

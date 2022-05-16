@@ -1,4 +1,5 @@
-﻿using ClaramontanaBibliography.Service;
+﻿using ClaramontanaBibliography.Data.Entities;
+using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.WebApi.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -27,11 +28,13 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 Title = x.Title,
                 Author = x.Author,
                 Year = x.Year,
-                ImageUrl = x.ImageUrl
+                NumberOfPages = x.NumberOfPages
             });
             return books;
         }
 
+        [ActionName("GetBookAsync")] //This attribute is needed for the proper link generation in CreateBook method,
+                                     //because by default the Async suffix is trimmed
         [HttpGet("{bookId:guid}")]
         public async Task<ActionResult<BookDto>> GetBookAsync(Guid bookId)
         {
@@ -48,10 +51,36 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 Title = book.Title,
                 Author = book.Author,
                 Year = book.Year,
-                ImageUrl = book.ImageUrl
+                NumberOfPages = book.NumberOfPages
             };
 
             return bookDto;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<BookDto>> CreateBookAsync(CreateBookDto bookDto)
+        {
+            Book book = new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = bookDto.Title,
+                Author = bookDto.Author,
+                Year = bookDto.Year,
+                NumberOfPages = bookDto.NumberOfPages
+            };
+
+            await _libraryItemService.CreateBookAsync(book);
+
+            
+            return CreatedAtAction(nameof(GetBookAsync), new { bookId = book.Id },
+                new
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Year = book.Year,
+                    NumberOfPages = book.NumberOfPages
+                });
         }
     }
 }

@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClaramontanaBibliography.WebApi.Dtos
 {
-    public class BookDto
+    public class CreateBookDto
     {
-        public Guid Id { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public string Author { get; set; }
+        [Required]
         public int Year { get; set; }
+        [Required]
         public int NumberOfPages { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ClaramontanaBibliography.Data.Models;
+﻿using ClaramontanaBibliography.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,13 @@ namespace ClaramontanaBibliography.Service
         {
             _libraryContext = libraryContext;
         }
+
+        public async Task CreateBookAsync(Book book)
+        {
+            _libraryContext.Add(book);
+            await _libraryContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
             var books = await _libraryContext.Books.ToListAsync();

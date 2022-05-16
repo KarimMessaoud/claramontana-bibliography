@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClaramontanaBibliography.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20220513091136_First migration")]
-    partial class Firstmigration
+    [Migration("20220516135936_Removed ImageUrl column from the database")]
+    partial class RemovedImageUrlcolumnfromthedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace ClaramontanaBibliography.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ClaramontanaBibliography.Data.Models.Book", b =>
+            modelBuilder.Entity("ClaramontanaBibliography.Data.Entities.Book", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,8 +30,8 @@ namespace ClaramontanaBibliography.Data.Migrations
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumberOfPages")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -44,7 +44,7 @@ namespace ClaramontanaBibliography.Data.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("ClaramontanaBibliography.Data.Models.Video", b =>
+            modelBuilder.Entity("ClaramontanaBibliography.Data.Entities.Video", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,8 +53,8 @@ namespace ClaramontanaBibliography.Data.Migrations
                     b.Property<string>("Director")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DurationInMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");

@@ -1,4 +1,4 @@
-using ClaramontanaBibliography.Data.Models;
+using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

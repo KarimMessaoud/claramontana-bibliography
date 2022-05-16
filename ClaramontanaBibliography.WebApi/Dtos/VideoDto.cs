@@ -11,6 +11,6 @@ namespace ClaramontanaBibliography.WebApi.Dtos
         public string Title { get; set; }
         public string Director { get; set; }
         public int Year { get; set; }
-        public string ImageUrl { get; set; }
+        public int DurationInMinutes { get; set; }
     }
 }
