@@ -82,5 +82,29 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                     NumberOfPages = book.NumberOfPages
                 });
         }
+
+        [HttpPut("{bookId}")]
+        public async Task<ActionResult> UpdateBookAsync(Guid bookId, UpdateBookDto bookDto)
+        {
+            var existingBook = await _libraryItemService.GetBookAsync(bookId);
+
+            if(existingBook == null)
+            {
+                return NotFound();
+            }
+
+            var updatedBook = new Book
+            {
+                Id = existingBook.Id,
+                Title = bookDto.Title,
+                Author = bookDto.Author,
+                Year = bookDto.Year,
+                NumberOfPages = bookDto.NumberOfPages
+            };
+
+            await _libraryItemService.UpdateBookAsync(updatedBook);
+
+            return NoContent();
+        }
     }
 }

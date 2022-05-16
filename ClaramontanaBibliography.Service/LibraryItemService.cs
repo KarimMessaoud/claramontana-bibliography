@@ -52,5 +52,16 @@ namespace ClaramontanaBibliography.Service
             var video = await _libraryContext.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
             return video;
         }
+
+        public async Task UpdateBookAsync(Book book)
+        {
+            var item = await _libraryContext.Books.FirstOrDefaultAsync(x => x.Id == book.Id);
+            item.Id = book.Id;
+            item.Title = book.Title;
+            item.Author = book.Author;
+            item.Year = book.Year;
+            item.NumberOfPages = book.NumberOfPages;
+            await _libraryContext.SaveChangesAsync();
+        }
     }           
 }
