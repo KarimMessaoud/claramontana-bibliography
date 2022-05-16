@@ -16,6 +16,7 @@ namespace ClaramontanaBibliography.Service
         Task UpdateBookAsync(Book book);
         Task UpdateVideoAsync(Video video);
         Task DeleteBookAsync(Guid bookId);
+        Task DeleteVideoAsync(Guid videoId);
 
     }
 }

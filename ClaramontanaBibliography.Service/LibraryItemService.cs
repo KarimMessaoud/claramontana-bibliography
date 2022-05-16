@@ -35,6 +35,13 @@ namespace ClaramontanaBibliography.Service
             await _libraryContext.SaveChangesAsync();
         }
 
+        public async Task DeleteVideoAsync(Guid videoId)
+        {
+            var item = await _libraryContext.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
+            _libraryContext.Remove(item);
+            await _libraryContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
             var books = await _libraryContext.Books.ToListAsync();

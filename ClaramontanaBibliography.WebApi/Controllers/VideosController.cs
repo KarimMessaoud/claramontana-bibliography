@@ -107,5 +107,19 @@ namespace ClaramontanaBibliography.WebApi.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{videoId}")]
+        public async Task<ActionResult> DeleteVideoAsync(Guid videoId)
+        {
+            var video = await _libraryItemService.GetVideoAsync(videoId);
+
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            await _libraryItemService.DeleteVideoAsync(videoId);
+            return NoContent();
+        }
     }
 }
