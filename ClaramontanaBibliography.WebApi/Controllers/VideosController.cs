@@ -1,6 +1,7 @@
 ﻿using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.WebApi.Dtos;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -120,6 +121,43 @@ namespace ClaramontanaBibliography.WebApi.Controllers
 
             await _libraryItemService.DeleteVideoAsync(videoId);
             return NoContent();
+        }
+
+        [HttpPatch("{videoId:guid}")]
+        public async Task<ActionResult> PatchVideoAsync(Guid videoId, [FromBody] JsonPatchDocument<Video> patchDoc)
+        {
+            if (patchDoc != null)
+            {
+                var video = await _libraryItemService.GetVideoAsync(videoId);
+
+                if (video == null)
+                {
+                    return NotFound();
+                }
+
+                patchDoc.ApplyTo(video, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                await _libraryItemService.UpdateVideoAsync(video);
+
+                var videoDto = new UpdateVideoDto
+                {
+                    Title = video.Title,
+                    Director = video.Director,
+                    Year = video.Year,
+                    DurationInMinutes = video.DurationInMinutes
+                };
+
+                return new ObjectResult(videoDto);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
     }
 }
