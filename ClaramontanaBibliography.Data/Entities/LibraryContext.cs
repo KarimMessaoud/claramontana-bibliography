@@ -16,5 +16,6 @@ namespace ClaramontanaBibliography.Data.Entities
 
         public DbSet<Book> Books { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
