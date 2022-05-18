@@ -1,5 +1,6 @@
 using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
+using ClaramontanaBibliography.Service.PasswordHashers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,8 @@ namespace ClaramontanaBibliography.WebApi
                 options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             }).AddNewtonsoftJson();
 
+            services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILibraryItemService, LibraryItemService>();
             services.AddDbContext<LibraryContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaLibraryConnection")));
