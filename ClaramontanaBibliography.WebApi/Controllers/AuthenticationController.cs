@@ -1,6 +1,7 @@
 ﻿using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.Service.PasswordHashers;
+using ClaramontanaBibliography.Service.TokenGenerators;
 using ClaramontanaBibliography.WebApi.Models;
 using ClaramontanaBibliography.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +19,15 @@ namespace ClaramontanaBibliography.WebApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
-        public AuthenticationController(IPasswordHasher passwordHasher, IUserService userService)
+        private readonly AccessTokenGenerator _accessTokenGenerator;
+
+        public AuthenticationController(IPasswordHasher passwordHasher,
+                                        IUserService userService,
+                                        AccessTokenGenerator accessTokenGenerator)
         {
             _passwordHasher = passwordHasher;
             _userService = userService;
+            _accessTokenGenerator = accessTokenGenerator;
         }
 
         [HttpPost("register")]
@@ -63,8 +69,38 @@ namespace ClaramontanaBibliography.WebApi.Controllers
             await _userService.CreateAsync(registrationUser);
 
             return NoContent();
+        }
 
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+                return BadRequest(errorMessages);
+            }
+
+            var user = await _userService.GetByUsernameAsync(loginRequest.UserName);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var isCorrectPassword = _passwordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash);
+
+            if (!isCorrectPassword)
+            {
+                return Unauthorized();
+            }
+
+            var accessToken = _accessTokenGenerator.GenerateToken(user);
+
+            return Ok(new AuthenticatedUserResponse
+            {
+                AccessToken = accessToken
+            });
         }
     }
 }
