@@ -10,7 +10,7 @@ namespace ClaramontanaBibliography.Service.TokenGenerators
         public string Issuer { get; set; }
         public string Audience { get; set; }
         public string AccessTokenSecretKey { get; set; }
-        public double AccessTokenExpirationMinutes { get; set; }
+        public int AccessTokenExpirationMinutes { get; set; }
         public int RefreshTokenExpirationMinutes { get; set; }
         public string RefreshTokenSecretKey { get; set; }
     }

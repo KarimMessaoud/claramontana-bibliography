@@ -8,6 +8,7 @@ namespace ClaramontanaBibliography.Service.RefreshTokenService
     {
         Task CreateAsync(RefreshTokenDto refreshTokenDto);
         Task<RefreshToken> GetByTokenAsync(string token);
-        Task Delete(Guid tokenId);
+        Task DeleteAsync(Guid tokenId);
+        Task DeleteAllAsync(Guid userId);
     }
 }

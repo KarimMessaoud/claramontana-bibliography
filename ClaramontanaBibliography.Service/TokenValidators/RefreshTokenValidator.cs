@@ -40,7 +40,6 @@ namespace ClaramontanaBibliography.Service.TokenValidators
             }
             catch (Exception ex)
             {
-
                 return false;
             }
         }

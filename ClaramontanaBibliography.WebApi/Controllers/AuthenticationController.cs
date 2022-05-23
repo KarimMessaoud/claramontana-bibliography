@@ -7,11 +7,13 @@ using ClaramontanaBibliography.Service.TokenValidators;
 using ClaramontanaBibliography.WebApi.Authenticators;
 using ClaramontanaBibliography.WebApi.Models;
 using ClaramontanaBibliography.WebApi.Models.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ClaramontanaBibliography.WebApi.Controllers
@@ -133,7 +135,7 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 return NotFound(new ErrorResponse("Invalid refresh token."));
             }
 
-            await _refreshTokenService.Delete(refreshToken.Id);
+            await _refreshTokenService.DeleteAsync(refreshToken.Id);
 
             var user = await _userService.GetByIdAsync(refreshToken.UserId);
             if(user == null)
@@ -144,7 +146,22 @@ namespace ClaramontanaBibliography.WebApi.Controllers
             var response = await _authenticator.AuthenticateAsync(user);
 
             return Ok(response);
+        }
 
+        [Authorize]
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("id");
+
+            if(!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            await _refreshTokenService.DeleteAllAsync(userId);
+
+            return NoContent();
         }
     }
 }
