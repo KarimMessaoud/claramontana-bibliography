@@ -133,6 +133,8 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 return NotFound(new ErrorResponse("Invalid refresh token."));
             }
 
+            await _refreshTokenService.Delete(refreshToken.Id);
+
             var user = await _userService.GetByIdAsync(refreshToken.UserId);
             if(user == null)
             {

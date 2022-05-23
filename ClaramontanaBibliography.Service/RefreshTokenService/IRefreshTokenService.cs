@@ -1,4 +1,5 @@
 ﻿using ClaramontanaBibliography.Data.Entities;
+using System;
 using System.Threading.Tasks;
 
 namespace ClaramontanaBibliography.Service.RefreshTokenService
@@ -7,5 +8,6 @@ namespace ClaramontanaBibliography.Service.RefreshTokenService
     {
         Task CreateAsync(RefreshTokenDto refreshTokenDto);
         Task<RefreshToken> GetByTokenAsync(string token);
+        Task Delete(Guid tokenId);
     }
 }

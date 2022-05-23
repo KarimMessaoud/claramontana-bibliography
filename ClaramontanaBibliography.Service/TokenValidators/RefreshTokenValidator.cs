@@ -38,7 +38,7 @@ namespace ClaramontanaBibliography.Service.TokenValidators
                 tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return false;
