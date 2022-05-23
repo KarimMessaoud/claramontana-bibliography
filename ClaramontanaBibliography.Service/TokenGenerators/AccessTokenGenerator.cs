@@ -13,17 +13,15 @@ namespace ClaramontanaBibliography.Service.TokenGenerators
     public class AccessTokenGenerator
     {
         private readonly AuthenticationConfiguration _configuration;
-        public AccessTokenGenerator(AuthenticationConfiguration configuration)
+        private readonly TokenGenerator _tokenGenerator;
+        public AccessTokenGenerator(AuthenticationConfiguration configuration, TokenGenerator tokenGenerator)
         {
             _configuration = configuration;
+            _tokenGenerator = tokenGenerator;
         }
 
         public string GenerateToken(User user)
         {
-            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.AccessTokenSecretKey));
-
-            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             List<Claim> claims = new List<Claim>
             {
                 new Claim("id", user.Id.ToString()),
@@ -31,16 +29,11 @@ namespace ClaramontanaBibliography.Service.TokenGenerators
                 new Claim(ClaimTypes.Name, user.UserName)
             };
 
-            JwtSecurityToken token = new JwtSecurityToken(
-                _configuration.Issuer, 
+            return _tokenGenerator.GenerateToken(_configuration.AccessTokenSecretKey,
+                _configuration.Issuer,
                 _configuration.Audience,
-                claims,
-                DateTime.Now,
-                DateTime.Now.AddMinutes(_configuration.AccessTokenExpirationMinutes),
-                credentials
-                );
-
-             return new JwtSecurityTokenHandler().WriteToken(token);
+                _configuration.AccessTokenExpirationMinutes,
+                claims);
         }
     }
 }

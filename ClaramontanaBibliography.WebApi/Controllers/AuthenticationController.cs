@@ -1,7 +1,10 @@
 ﻿using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.Service.PasswordHashers;
+using ClaramontanaBibliography.Service.RefreshTokenService;
 using ClaramontanaBibliography.Service.TokenGenerators;
+using ClaramontanaBibliography.Service.TokenValidators;
+using ClaramontanaBibliography.WebApi.Authenticators;
 using ClaramontanaBibliography.WebApi.Models;
 using ClaramontanaBibliography.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Http;
@@ -19,15 +22,21 @@ namespace ClaramontanaBibliography.WebApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly AccessTokenGenerator _accessTokenGenerator;
+        private readonly Authenticator _authenticator;
+        private readonly RefreshTokenValidator _refreshTokenValidator;
+        private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthenticationController(IPasswordHasher passwordHasher,
-                                        IUserService userService,
-                                        AccessTokenGenerator accessTokenGenerator)
+        public AuthenticationController(IUserService userService, 
+                                        IPasswordHasher passwordHasher, 
+                                        Authenticator authenticator, 
+                                        RefreshTokenValidator refreshTokenValidator, 
+                                        IRefreshTokenService refreshTokenService)
         {
-            _passwordHasher = passwordHasher;
             _userService = userService;
-            _accessTokenGenerator = accessTokenGenerator;
+            _passwordHasher = passwordHasher;
+            _authenticator = authenticator;
+            _refreshTokenValidator = refreshTokenValidator;
+            _refreshTokenService = refreshTokenService;
         }
 
         [HttpPost("register")]
@@ -73,7 +82,7 @@ namespace ClaramontanaBibliography.WebApi.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -95,12 +104,45 @@ namespace ClaramontanaBibliography.WebApi.Controllers
                 return Unauthorized();
             }
 
-            var accessToken = _accessTokenGenerator.GenerateToken(user);
+            var response = await _authenticator.AuthenticateAsync(user);
 
-            return Ok(new AuthenticatedUserResponse
+            return Ok(response);
+            
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest refreshRequest)
+        {
+            if (!ModelState.IsValid)
             {
-                AccessToken = accessToken
-            });
+                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+                return BadRequest(errorMessages);
+            }
+
+            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshRequest.RefreshToken);
+
+            if (!isValidRefreshToken)
+            {
+                return BadRequest(new ErrorResponse("Invalid refresh token."));
+            }
+
+            var refreshToken = await _refreshTokenService.GetByTokenAsync(refreshRequest.RefreshToken);
+
+            if(refreshToken == null)
+            {
+                return NotFound(new ErrorResponse("Invalid refresh token."));
+            }
+
+            var user = await _userService.GetByIdAsync(refreshToken.UserId);
+            if(user == null)
+            {
+                return NotFound(new ErrorResponse("User not found."));
+            }
+
+            var response = await _authenticator.AuthenticateAsync(user);
+
+            return Ok(response);
+
         }
     }
 }

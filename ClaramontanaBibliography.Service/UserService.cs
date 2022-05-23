@@ -29,6 +29,12 @@ namespace ClaramontanaBibliography.Service
             return user;
         }
 
+        public async Task<User> GetByIdAsync(Guid userId)
+        {
+            var user = await _libraryContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            return user;
+        }
+
         public async Task<User> GetByUsernameAsync(string username)
         {
             var user = await _libraryContext.Users.FirstOrDefaultAsync(x => x.UserName == username);

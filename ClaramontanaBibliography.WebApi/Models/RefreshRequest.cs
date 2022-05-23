@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ClaramontanaBibliography.WebApi.Models.Responses
+namespace ClaramontanaBibliography.WebApi.Models
 {
-    public class AuthenticatedUserResponse
+    public class RefreshRequest
     {
-        public string AccessToken { get; set; }
+        [Required]
         public string RefreshToken { get; set; }
     }
 }

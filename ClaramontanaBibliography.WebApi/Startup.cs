@@ -1,7 +1,10 @@
 using ClaramontanaBibliography.Data.Entities;
 using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.Service.PasswordHashers;
+using ClaramontanaBibliography.Service.RefreshTokenService;
 using ClaramontanaBibliography.Service.TokenGenerators;
+using ClaramontanaBibliography.Service.TokenValidators;
+using ClaramontanaBibliography.WebApi.Authenticators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -43,8 +46,14 @@ namespace ClaramontanaBibliography.WebApi
             services.AddSingleton(authenticationConfiguration);
 
             services.AddSingleton<AccessTokenGenerator>();
+            services.AddSingleton<RefreshTokenGenerator>();
+            services.AddSingleton<TokenGenerator>();
+            services.AddSingleton<RefreshTokenValidator>();
             services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+
+            services.AddScoped<Authenticator>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ILibraryItemService, LibraryItemService>();
             services.AddDbContext<LibraryContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaLibraryConnection")));
