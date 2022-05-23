@@ -34,14 +34,17 @@ namespace ClaramontanaBibliography.Service.RefreshTokenService
 
         public async Task DeleteAsync(Guid tokenId)
         {
-            var refreshToken = await _libraryContext.RefreshTokens.FirstOrDefaultAsync(x => x.Id == tokenId);
-            _libraryContext.Remove(refreshToken);
-            await _libraryContext.SaveChangesAsync();
+            var refreshToken = await _libraryContext.RefreshTokens.FindAsync(tokenId);
+            if (refreshToken != null)
+            {
+                _libraryContext.Remove(refreshToken);
+                await _libraryContext.SaveChangesAsync(); 
+            }
         }
 
         public async Task DeleteAllAsync(Guid userId)
         {
-            var refreshTokens = _libraryContext.RefreshTokens.Where(x => x.UserId == userId);
+            var refreshTokens = await _libraryContext.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
             _libraryContext.RemoveRange(refreshTokens);
             await _libraryContext.SaveChangesAsync();
         }
