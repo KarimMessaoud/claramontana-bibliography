@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaBibliography.WebApi", "ClaramontanaBibliography.WebApi\ClaramontanaBibliography.WebApi.csproj", "{56B9A065-1C70-43A5-93AC-3D3667BF74D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaOnlineShop.WebApi", "ClaramontanaOnlineShop.WebApi\ClaramontanaOnlineShop.WebApi.csproj", "{56B9A065-1C70-43A5-93AC-3D3667BF74D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaBibliography.Data", "ClaramontanaBibliography.Data\ClaramontanaBibliography.Data.csproj", "{1C0C011B-EE7D-4A3E-96FE-CBA657759D10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaOnlineShop.Data", "ClaramontanaOnlineShop.Data\ClaramontanaOnlineShop.Data.csproj", "{1C0C011B-EE7D-4A3E-96FE-CBA657759D10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaBibliography.Service", "ClaramontanaBibliography.Service\ClaramontanaBibliography.Service.csproj", "{84A0E630-CCA7-408C-8D65-C115B415C00B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaOnlineShop.Service", "ClaramontanaOnlineShop.Service\ClaramontanaOnlineShop.Service.csproj", "{84A0E630-CCA7-408C-8D65-C115B415C00B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServer.API", "DataServer.API\DataServer.API.csproj", "{B74F22E1-43FB-48AD-AFAB-799504A86A90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataServer.API", "DataServer.API\DataServer.API.csproj", "{B74F22E1-43FB-48AD-AFAB-799504A86A90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
