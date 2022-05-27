@@ -1,20 +1,19 @@
-﻿using ClaramontanaBibliography.Data.Entities;
+﻿using ClaramontanaBibliography.Data;
+using ClaramontanaBibliography.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ClaramontanaBibliography.Service.RefreshTokenService
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly LibraryContext _libraryContext;
+        private readonly ProductContext _dbContext;
 
-        public RefreshTokenService(LibraryContext libraryContext)
+        public RefreshTokenService(ProductContext dbContext)
         {
-            _libraryContext = libraryContext;
+            _dbContext = dbContext;
         }
 
         public async Task CreateAsync(RefreshTokenDto refreshTokenDto)
@@ -27,31 +26,31 @@ namespace ClaramontanaBibliography.Service.RefreshTokenService
                 UserId = refreshTokenDto.UserId
             };
 
-            _libraryContext.RefreshTokens.Add(refreshToken);
+            _dbContext.RefreshTokens.Add(refreshToken);
 
-            await _libraryContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid tokenId)
         {
-            var refreshToken = await _libraryContext.RefreshTokens.FindAsync(tokenId);
+            var refreshToken = await _dbContext.RefreshTokens.FindAsync(tokenId);
             if (refreshToken != null)
             {
-                _libraryContext.Remove(refreshToken);
-                await _libraryContext.SaveChangesAsync(); 
+                _dbContext.Remove(refreshToken);
+                await _dbContext.SaveChangesAsync(); 
             }
         }
 
         public async Task DeleteAllAsync(Guid userId)
         {
-            var refreshTokens = await _libraryContext.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
-            _libraryContext.RemoveRange(refreshTokens);
-            await _libraryContext.SaveChangesAsync();
+            var refreshTokens = await _dbContext.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
+            _dbContext.RemoveRange(refreshTokens);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<RefreshToken> GetByTokenAsync(string token)
         {
-            var refreshToken = await _libraryContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
+            var refreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
 
             return refreshToken;
         }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClaramontanaBibliography.Data.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(ProductContext))]
     [Migration("20220516135936_Removed ImageUrl column from the database")]
     partial class RemovedImageUrlcolumnfromthedatabase
     {

@@ -1,4 +1,5 @@
-﻿using ClaramontanaBibliography.Data.Entities;
+﻿using ClaramontanaBibliography.Data;
+using ClaramontanaBibliography.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace ClaramontanaBibliography.Service
 {
     public class UserService : IUserService
     {
-        private readonly LibraryContext _libraryContext;
-        public UserService(LibraryContext libraryContext)
+        private readonly ProductContext _libraryContext;
+        public UserService(ProductContext libraryContext)
         {
             _libraryContext = libraryContext;
         }

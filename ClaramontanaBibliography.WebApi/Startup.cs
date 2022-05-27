@@ -1,4 +1,4 @@
-using ClaramontanaBibliography.Data.Entities;
+using ClaramontanaBibliography.Data;
 using ClaramontanaBibliography.Service;
 using ClaramontanaBibliography.Service.PasswordHashers;
 using ClaramontanaBibliography.Service.RefreshTokenService;
@@ -58,8 +58,8 @@ namespace ClaramontanaBibliography.WebApi
             services.AddScoped<Authenticator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-            services.AddScoped<ILibraryItemService, LibraryItemService>();
-            services.AddDbContext<LibraryContext>(options
+            services.AddScoped<IProductService, ProductService>();
+            services.AddDbContext<ProductContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaLibraryConnection")));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>

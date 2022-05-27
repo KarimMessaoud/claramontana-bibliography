@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClaramontanaBibliography.Data.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(ProductContext))]
     [Migration("20220518111244_Add Users table")]
     partial class AddUserstable
     {

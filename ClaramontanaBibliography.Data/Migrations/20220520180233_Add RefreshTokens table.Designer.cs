@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClaramontanaBibliography.Data.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(ProductContext))]
     [Migration("20220520180233_Add RefreshTokens table")]
     partial class AddRefreshTokenstable
     {
