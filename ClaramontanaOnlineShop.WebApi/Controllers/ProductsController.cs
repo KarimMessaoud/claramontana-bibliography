@@ -1,4 +1,5 @@
-﻿using ClaramontanaOnlineShop.Data.Entities;
+﻿using AutoMapper;
+using ClaramontanaOnlineShop.Data.Entities;
 using ClaramontanaOnlineShop.Service;
 using ClaramontanaOnlineShop.WebApi.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
@@ -15,27 +16,22 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        private readonly IMapper _mapper;
+        public ProductsController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
+            _mapper = mapper;
         }
+
 
         [HttpGet]
         public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
         {
-            var products = (await _productService.GetAllProductsAsync()).Select(x => new ProductDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                Price = x.Price,
-                Image = x.Image,
-                Quantity = x.Quantity,
-                IsAvailable = x.IsAvailable
-            });
+            var products = _mapper.Map<IEnumerable<ProductDto>>(await _productService.GetAllProductsAsync());
 
             return products;
         }
+
 
         [ActionName("GetProductAsync")] //This attribute is needed for the proper link generation in CreateProduct method,
                                      //because by default the Async suffix is trimmed
@@ -49,48 +45,22 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return NotFound();
             }
 
-            var productDto = new ProductDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                Image = product.Image,
-                Quantity = product.Quantity,
-                IsAvailable = product.IsAvailable
-            };
+            var productDto = _mapper.Map<ProductDto>(product);
 
             return productDto;
         }
 
+
         [HttpPost]
         public async Task<ActionResult<ProductDto>> CreateProductAsync(CreateProductDto productDto)
         {
-            Product product = new Product
-            {
-                Name = productDto.Name,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                Image = productDto.Image,
-                Quantity = productDto.Quantity,
-                IsAvailable = productDto.IsAvailable
-            };
+            Product product = _mapper.Map<Product>(productDto);
 
             await _productService.CreateProductAsync(product);
 
-            
-            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id },
-                new
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Description = productDto.Description,
-                    Price = productDto.Price,
-                    Image = productDto.Image,
-                    Quantity = productDto.Quantity,
-                    IsAvailable = productDto.IsAvailable
-                });
+            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id }, _mapper.Map<CreateProductDto>(product));
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProductAsync(Guid id, UpdateProductDto productDto)
@@ -102,21 +72,14 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return NotFound();
             }
 
-            var updatedProduct = new Product
-            {
-                Id = existingProduct.Id,
-                Name = productDto.Name,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                Image = productDto.Image,
-                Quantity = productDto.Quantity,
-                IsAvailable = productDto.IsAvailable
-            };
+            Product updatedProduct = _mapper.Map<Product>(productDto);
+            updatedProduct.Id = existingProduct.Id;
 
             await _productService.UpdateProductAsync(updatedProduct);
 
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProductAsync(Guid id)
@@ -131,6 +94,7 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
             await _productService.DeleteProductAsync(id);
             return NoContent();
         }
+
 
         [HttpPatch("{productId:guid}")]
         public async Task<ActionResult> PatchProductAsync(Guid productId, [FromBody] JsonPatchDocument<Product> patchDoc)
@@ -153,15 +117,7 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
 
                 await _productService.UpdateProductAsync(product);
 
-                var productDto = new UpdateProductDto
-                {
-                    Name = product.Name,
-                    Description = product.Description,
-                    Price = product.Price,
-                    Image = product.Image,
-                    Quantity = product.Quantity,
-                    IsAvailable = product.IsAvailable
-                };
+                UpdateProductDto productDto = _mapper.Map<UpdateProductDto>(product);
 
                 return new ObjectResult(productDto);
             }
