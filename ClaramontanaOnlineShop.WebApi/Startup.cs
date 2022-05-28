@@ -60,7 +60,7 @@ namespace ClaramontanaOnlineShop.WebApi
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddDbContext<ProductContext>(options
-                => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaLibraryConnection")));
+                => options.UseSqlServer(Configuration.GetConnectionString("ClaramontanaEcommerceConnection")));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
             {
