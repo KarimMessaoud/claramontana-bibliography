@@ -18,10 +18,8 @@ namespace ClaramontanaOnlineShop.Service.RefreshTokenService
 
         public async Task CreateAsync(RefreshTokenDto refreshTokenDto)
         {
-            refreshTokenDto.Id = Guid.NewGuid();
             var refreshToken = new RefreshToken
             {
-                Id = refreshTokenDto.Id,
                 Token = refreshTokenDto.Token,
                 UserId = refreshTokenDto.UserId
             };

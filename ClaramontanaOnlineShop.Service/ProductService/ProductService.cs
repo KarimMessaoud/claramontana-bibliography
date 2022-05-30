@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ClaramontanaOnlineShop.Service
+namespace ClaramontanaOnlineShop.Service.ProductService
 {
     public class ProductService : IProductService
     {
@@ -44,7 +44,7 @@ namespace ClaramontanaOnlineShop.Service
         public async Task UpdateProductAsync(Product product)
         {
             var item = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id);
-            item.Id = product.Id;
+
             item.Name = product.Name;
             item.Description = product.Description;
             item.Price = product.Price;

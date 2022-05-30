@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ClaramontanaOnlineShop.Service
+namespace ClaramontanaOnlineShop.Service.ProductService
 {
     public interface IProductService
     {

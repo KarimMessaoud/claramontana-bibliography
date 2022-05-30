@@ -1,6 +1,7 @@
 using ClaramontanaOnlineShop.Data;
-using ClaramontanaOnlineShop.Service;
+using ClaramontanaOnlineShop.Service.UserService;
 using ClaramontanaOnlineShop.Service.PasswordHashers;
+using ClaramontanaOnlineShop.Service.ProductService;
 using ClaramontanaOnlineShop.Service.RefreshTokenService;
 using ClaramontanaOnlineShop.Service.TokenGenerators;
 using ClaramontanaOnlineShop.Service.TokenValidators;

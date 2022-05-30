@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ClaramontanaOnlineShop.Data.Entities;
-using ClaramontanaOnlineShop.Service;
+using ClaramontanaOnlineShop.Service.ProductService;
 using ClaramontanaOnlineShop.WebApi.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
