@@ -1,6 +1,4 @@
 using ClaramontanaOnlineShop.Data;
-using ClaramontanaOnlineShop.Service.UserService;
-using ClaramontanaOnlineShop.Service.PasswordHashers;
 using ClaramontanaOnlineShop.Service.ProductService;
 using ClaramontanaOnlineShop.Service.RefreshTokenService;
 using ClaramontanaOnlineShop.Service.TokenGenerators;
@@ -21,6 +19,8 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Linq;
 using System.Text;
+using ClaramontanaOnlineShop.Service;
+using ClaramontanaOnlineShop.Data.Entities;
 
 namespace ClaramontanaOnlineShop.WebApi
 {
@@ -46,6 +46,16 @@ namespace ClaramontanaOnlineShop.WebApi
                 options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             }).AddNewtonsoftJson();
 
+            services.AddIdentityCore<User>(o =>
+            {
+                o.User.RequireUniqueEmail = true;
+
+                o.Password.RequireDigit = false;
+                o.Password.RequiredLength = 3;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<ProductContext>();
+
             AuthenticationConfiguration authenticationConfiguration = new AuthenticationConfiguration();
             Configuration.Bind("Authentication", authenticationConfiguration);
             services.AddSingleton(authenticationConfiguration);
@@ -54,10 +64,8 @@ namespace ClaramontanaOnlineShop.WebApi
             services.AddSingleton<RefreshTokenGenerator>();
             services.AddSingleton<TokenGenerator>();
             services.AddSingleton<RefreshTokenValidator>();
-            services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 
             services.AddScoped<Authenticator>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddDbContext<ProductContext>(options

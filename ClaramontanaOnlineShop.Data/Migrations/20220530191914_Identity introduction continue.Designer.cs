@@ -4,14 +4,16 @@ using ClaramontanaOnlineShop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClaramontanaOnlineShop.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20220530191914_Identity introduction continue")]
+    partial class Identityintroductioncontinue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

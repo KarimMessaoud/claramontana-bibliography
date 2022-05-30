@@ -1,6 +1,4 @@
 ﻿using ClaramontanaOnlineShop.Data.Entities;
-using ClaramontanaOnlineShop.Service.UserService;
-using ClaramontanaOnlineShop.Service.PasswordHashers;
 using ClaramontanaOnlineShop.Service.RefreshTokenService;
 using ClaramontanaOnlineShop.Service.TokenValidators;
 using ClaramontanaOnlineShop.WebApi.Authenticators;
@@ -14,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClaramontanaOnlineShop.WebApi.Controllers
 {
@@ -21,20 +20,17 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly IPasswordHasher _passwordHasher;
+        private readonly UserManager<User> _userManager;
         private readonly Authenticator _authenticator;
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthenticationController(IUserService userService, 
-                                        IPasswordHasher passwordHasher, 
+        public AuthenticationController(UserManager<User> userManager,
                                         Authenticator authenticator, 
                                         RefreshTokenValidator refreshTokenValidator, 
                                         IRefreshTokenService refreshTokenService)
         {
-            _userService = userService;
-            _passwordHasher = passwordHasher;
+            _userManager = userManager;
             _authenticator = authenticator;
             _refreshTokenValidator = refreshTokenValidator;
             _refreshTokenService = refreshTokenService;
@@ -54,29 +50,29 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return BadRequest(new ErrorResponse("Password does not match confirm password."));
             }
 
-            var existingUserByEmail = await _userService.GetByEmailAsync(registerRequest.Email);
-            if(existingUserByEmail != null)
-            {
-                return Conflict(new ErrorResponse("Email already exists."));
-            }
-
-            var existingUserByUsername = await _userService.GetByUsernameAsync(registerRequest.UserName);
-            if (existingUserByUsername != null)
-            {
-                return Conflict(new ErrorResponse("Username already exists."));
-            }
-
-            string passwordHash = _passwordHasher.HashPassword(registerRequest.Password);
-
             var registrationUser = new User
             {
-                Id = Guid.NewGuid(),
                 Email = registerRequest.Email,
                 UserName = registerRequest.UserName,
-                PasswordHash = passwordHash
             };
 
-            await _userService.CreateAsync(registrationUser);
+            IdentityResult result = await _userManager.CreateAsync(registrationUser, registerRequest.Password);
+
+            if (!result.Succeeded)
+            {
+                IdentityErrorDescriber errorDescriber = new IdentityErrorDescriber();
+                IdentityError primaryError = result.Errors.FirstOrDefault();
+                
+                if(primaryError.Code == nameof(errorDescriber.DuplicateEmail))
+                {
+                    return Conflict(new ErrorResponse("Email already exists."));
+                }  
+                
+                if(primaryError.Code == nameof(errorDescriber.DuplicateUserName))
+                {
+                    return Conflict(new ErrorResponse("Username already exists."));
+                }
+            }
 
             return NoContent();
         }
@@ -91,14 +87,14 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return BadRequest(errorMessages);
             }
 
-            var user = await _userService.GetByUsernameAsync(loginRequest.UserName);
+            var user = await _userManager.FindByNameAsync(loginRequest.UserName);
 
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var isCorrectPassword = _passwordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash);
+            var isCorrectPassword = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
 
             if (!isCorrectPassword)
             {
@@ -136,7 +132,7 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
 
             await _refreshTokenService.DeleteAsync(refreshToken.Id);
 
-            var user = await _userService.GetByIdAsync(refreshToken.UserId);
+            var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
             if(user == null)
             {
                 return NotFound(new ErrorResponse("User not found."));

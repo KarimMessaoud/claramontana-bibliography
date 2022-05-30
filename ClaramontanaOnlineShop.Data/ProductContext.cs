@@ -1,9 +1,12 @@
 ﻿using ClaramontanaOnlineShop.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ClaramontanaOnlineShop.Data
 {
-    public class ProductContext : DbContext
+    public class ProductContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public ProductContext(DbContextOptions<ProductContext> options)
             : base(options)
@@ -11,7 +14,6 @@ namespace ClaramontanaOnlineShop.Data
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }
