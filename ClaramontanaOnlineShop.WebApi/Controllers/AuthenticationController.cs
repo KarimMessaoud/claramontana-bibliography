@@ -86,43 +86,42 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
 
             IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
             return BadRequest(errorMessages);
-
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshRequest refreshRequest)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-                return BadRequest(errorMessages);
+                bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshRequest.RefreshToken);
+
+                if (!isValidRefreshToken)
+                {
+                    return BadRequest(new ErrorResponse("Invalid refresh token."));
+                }
+
+                var refreshToken = await _refreshTokenService.GetByTokenAsync(refreshRequest.RefreshToken);
+
+                if (refreshToken == null)
+                {
+                    return NotFound(new ErrorResponse("Invalid refresh token."));
+                }
+
+                await _refreshTokenService.DeleteAsync(refreshToken.Id);
+
+                var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
+                if (user == null)
+                {
+                    return NotFound(new ErrorResponse("User not found."));
+                }
+
+                var response = await _authenticator.AuthenticateAsync(user);
+
+                return Ok(response);
             }
 
-            bool isValidRefreshToken = _refreshTokenValidator.Validate(refreshRequest.RefreshToken);
-
-            if (!isValidRefreshToken)
-            {
-                return BadRequest(new ErrorResponse("Invalid refresh token."));
-            }
-
-            var refreshToken = await _refreshTokenService.GetByTokenAsync(refreshRequest.RefreshToken);
-
-            if(refreshToken == null)
-            {
-                return NotFound(new ErrorResponse("Invalid refresh token."));
-            }
-
-            await _refreshTokenService.DeleteAsync(refreshToken.Id);
-
-            var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
-            if(user == null)
-            {
-                return NotFound(new ErrorResponse("User not found."));
-            }
-
-            var response = await _authenticator.AuthenticateAsync(user);
-
-            return Ok(response);
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+            return BadRequest(errorMessages);
         }
 
         [Authorize]
