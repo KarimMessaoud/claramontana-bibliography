@@ -63,30 +63,30 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-                return BadRequest(errorMessages);
+                var user = await _userManager.FindByNameAsync(loginRequest.UserName);
+
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var isCorrectPassword = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
+
+                if (!isCorrectPassword)
+                {
+                    return Unauthorized();
+                }
+
+                var response = await _authenticator.AuthenticateAsync(user);
+
+                return Ok(response);
             }
 
-            var user = await _userManager.FindByNameAsync(loginRequest.UserName);
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+            return BadRequest(errorMessages);
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var isCorrectPassword = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
-
-            if (!isCorrectPassword)
-            {
-                return Unauthorized();
-            }
-
-            var response = await _authenticator.AuthenticateAsync(user);
-
-            return Ok(response);
-            
         }
 
         [HttpPost("refresh")]
