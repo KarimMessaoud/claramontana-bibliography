@@ -39,42 +39,24 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-                return BadRequest(errorMessages);
-            }
-
-            if (registerRequest.Password != registerRequest.ConfirmPassword)
-            {
-                return BadRequest(new ErrorResponse("Password does not match confirm password."));
-            }
-
-            var registrationUser = new User
-            {
-                Email = registerRequest.Email,
-                UserName = registerRequest.UserName,
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(registrationUser, registerRequest.Password);
-
-            if (!result.Succeeded)
-            {
-                IdentityErrorDescriber errorDescriber = new IdentityErrorDescriber();
-                IdentityError primaryError = result.Errors.FirstOrDefault();
-                
-                if(primaryError.Code == nameof(errorDescriber.DuplicateEmail))
+                var user = new User
                 {
-                    return Conflict(new ErrorResponse("Email already exists."));
-                }  
-                
-                if(primaryError.Code == nameof(errorDescriber.DuplicateUserName))
+                    Email = registerRequest.Email,
+                    UserName = registerRequest.UserName,
+                };
+
+                IdentityResult result = await _userManager.CreateAsync(user, registerRequest.Password);
+                if (result.Succeeded)
                 {
-                    return Conflict(new ErrorResponse("Username already exists."));
+                    return Ok();
                 }
+                return BadRequest(result.Errors.Select(x => x.Description));
             }
 
-            return NoContent();
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+            return BadRequest(errorMessages);
         }
 
 

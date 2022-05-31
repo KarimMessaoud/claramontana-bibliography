@@ -19,6 +19,7 @@ namespace ClaramontanaOnlineShop.WebApi.Models
         public string Password { get; set; }
 
         [Required]
+        [Compare("Password", ErrorMessage = "The confirmation password does not match the password")]
         public string ConfirmPassword { get; set; }
     }
 }
