@@ -52,11 +52,11 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 {
                     return Ok();
                 }
+
                 return BadRequest(result.Errors.Select(x => x.Description));
             }
 
-            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-            return BadRequest(errorMessages);
+            return BadRequestModelState();
         }
 
 
@@ -84,9 +84,9 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return Ok(response);
             }
 
-            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-            return BadRequest(errorMessages);
+            return BadRequestModelState();
         }
+
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshRequest refreshRequest)
@@ -120,9 +120,9 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
                 return Ok(response);
             }
 
-            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
-            return BadRequest(errorMessages);
+            return BadRequestModelState();
         }
+
 
         [Authorize]
         [HttpDelete("logout")]
@@ -138,6 +138,12 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
             await _refreshTokenService.DeleteAllAsync(userId);
 
             return NoContent();
+        }
+
+        private IActionResult BadRequestModelState()
+        {
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage));
+            return BadRequest(errorMessages);
         }
     }
 }
