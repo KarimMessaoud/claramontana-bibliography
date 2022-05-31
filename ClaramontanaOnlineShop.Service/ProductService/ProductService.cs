@@ -30,7 +30,7 @@ namespace ClaramontanaOnlineShop.Service.ProductService
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            var products = await _dbContext.Products.ToListAsync();
+            var products = await _dbContext.Products.AsNoTracking().ToListAsync();
             return products;
         }
 
