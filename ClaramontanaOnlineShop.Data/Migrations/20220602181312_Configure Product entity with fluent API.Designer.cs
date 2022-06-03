@@ -4,14 +4,16 @@ using ClaramontanaOnlineShop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClaramontanaOnlineShop.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20220602181312_Configure Product entity with fluent API")]
+    partial class ConfigureProductentitywithfluentAPI
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
