@@ -87,6 +87,8 @@ namespace ClaramontanaOnlineShop.WebApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ClaramontanaOnlineShop.WebApi", Version = "v1" });
+
+                //The below configurations are to support Authorization header in Swagger
                 c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme { 
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
