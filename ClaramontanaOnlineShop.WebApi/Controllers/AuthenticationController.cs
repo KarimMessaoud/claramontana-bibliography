@@ -36,6 +36,7 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
             _refreshTokenService = refreshTokenService;
         }
 
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
