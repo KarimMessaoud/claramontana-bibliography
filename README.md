@@ -1,6 +1,6 @@
 # claramontana-online-shop
 
-Web API aplication. </br>
+Web API application. </br>
 Every method related to products (and the logout method as well) is authenticated using JSON Web Tokens.</br>
 Built in ASP.NET 5.0 and C#. </br>
 Database Management System: SQL Server 2019.
