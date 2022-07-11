@@ -45,12 +45,7 @@ namespace ClaramontanaOnlineShop.Service.ProductService
         {
             var item = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id);
 
-            item.Name = product.Name;
-            item.Description = product.Description;
-            item.Price = product.Price;
-            item.Image = product.Image;
-            item.Quantity = product.Quantity;
-            item.IsAvailable = product.IsAvailable;
+            ObjectMapper.Mapper.Map(product, item);
 
             await _dbContext.SaveChangesAsync();
         }
