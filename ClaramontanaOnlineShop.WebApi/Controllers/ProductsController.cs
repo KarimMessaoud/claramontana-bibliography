@@ -35,7 +35,7 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
 
 
         [ActionName("GetProductAsync")] //This attribute is needed for the proper link generation in CreateProduct method,
-                                     //because by default the Async suffix is trimmed
+                                        //because by default the Async suffix is trimmed
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProductDto>> GetProductAsync(Guid id)
         {
@@ -56,10 +56,10 @@ namespace ClaramontanaOnlineShop.WebApi.Controllers
         public async Task<ActionResult<ProductDto>> CreateProductAsync(CreateProductDto productDto)
         {
             Product product = _mapper.Map<Product>(productDto);
-
+          
             await _productService.CreateProductAsync(product);
 
-            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id }, _mapper.Map<CreateProductDto>(product));
+            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id }, _mapper.Map<ProductDto>(product));
         }
 
 

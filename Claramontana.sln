@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaOnlineShop.Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClaramontanaOnlineShop.Service", "ClaramontanaOnlineShop.Service\ClaramontanaOnlineShop.Service.csproj", "{84A0E630-CCA7-408C-8D65-C115B415C00B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaramontanaOnlineShop.Tests", "ClaramontanaOnlineShop.Tests\ClaramontanaOnlineShop.Tests.csproj", "{D85FB785-75DF-4262-9959-7578A82578CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{84A0E630-CCA7-408C-8D65-C115B415C00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84A0E630-CCA7-408C-8D65-C115B415C00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84A0E630-CCA7-408C-8D65-C115B415C00B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85FB785-75DF-4262-9959-7578A82578CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85FB785-75DF-4262-9959-7578A82578CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85FB785-75DF-4262-9959-7578A82578CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85FB785-75DF-4262-9959-7578A82578CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

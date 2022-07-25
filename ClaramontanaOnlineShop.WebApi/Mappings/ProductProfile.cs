@@ -13,6 +13,7 @@ namespace ClaramontanaOnlineShop.WebApi.Mappings
         public ProductProfile()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<Product, UpdateProductDto>();
             CreateMap<CreateProductDto, Product>().ReverseMap();
             CreateMap<UpdateProductDto, Product>().ReverseMap();
         }
