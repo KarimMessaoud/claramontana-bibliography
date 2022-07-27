@@ -4,7 +4,9 @@ using ClaramontanaOnlineShop.WebApi.Controllers;
 using ClaramontanaOnlineShop.WebApi.Dtos;
 using FluentAssertions;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
 using System;
 using System.Threading.Tasks;
@@ -185,6 +187,87 @@ namespace ClaramontanaOnlineShop.Tests
 
             //Assert
             result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task PatchProductAsync_WithPatchDocumentNull_ReturnsBadRequest()
+        {
+            //Arrange
+            var controller = new ProductsController(productServiceStub.Object, ObjectMapper.Mapper);
+
+            //Act
+            var result = await controller.PatchProductAsync(Guid.NewGuid(), null);
+
+            //Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+
+        }
+
+        [Fact]
+        public async Task PatchProductAsync_WithUnexistingProduct_ReturnsNotFound()
+        {
+            //Arrange
+            productServiceStub.Setup(x => x.GetProductByIdAsync(It.IsAny<Guid>())).ReturnsAsync((Product)null);
+
+            var controller = new ProductsController(productServiceStub.Object, ObjectMapper.Mapper);
+
+            //Act
+            var result = await controller.PatchProductAsync(Guid.NewGuid(), new JsonPatchDocument<Product>());
+
+            //Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async Task PatchProductAsync_WithExistingProduct_ReturnsObjectResult()
+        {
+            //Arrange
+            var existingProduct = CreateRandomProduct();
+
+            productServiceStub.Setup(x => x.GetProductByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(existingProduct);
+
+            var controller = new ProductsController(productServiceStub.Object, ObjectMapper.Mapper);
+            var productId = existingProduct.Id;
+
+            var patch = new JsonPatchDocument<Product>();
+            patch.Replace(x => x.Name, Guid.NewGuid().ToString());
+            patch.Replace(x => x.Price, rand.Next(1000));
+
+
+            //Act
+            var result = await controller.PatchProductAsync(productId, patch);
+
+            //Assert
+            result.Should().BeOfType<ObjectResult>();
+
+            var updatedProduct = (result as ObjectResult).Value as UpdateProductDto;
+            updatedProduct.Name.Should().BeEquivalentTo(patch.Operations[0].value.ToString());
+            updatedProduct.Price.Should().Be((decimal)patch.Operations[1].value);
+        }
+
+        [Fact]
+        public async Task PatchProductAsync_WithInvalidModelState_ReturnsBadRequest()
+        {
+            //Arrange
+            var existingProduct = CreateRandomProduct();
+
+            productServiceStub.Setup(x => x.GetProductByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(existingProduct);
+
+            var controller = new ProductsController(productServiceStub.Object, ObjectMapper.Mapper);
+            var productId = existingProduct.Id;
+
+            var patch = new JsonPatchDocument<Product>();
+
+            //null is invalid for quantity
+            patch.Operations.Add(new Operation<Product>("replace", "/quantity", null));
+
+            //Act
+            var result = await controller.PatchProductAsync(productId, patch);
+
+            //Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         private Product CreateRandomProduct()

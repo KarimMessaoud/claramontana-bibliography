@@ -10,7 +10,7 @@ namespace ClaramontanaOnlineShop.Tests
         {
             CreateMap<Product,ProductDto>();
             CreateMap<CreateProductDto, Product>().ReverseMap();
-            CreateMap<UpdateProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>().ReverseMap();
             // Additional mappings here...
         }
     }
